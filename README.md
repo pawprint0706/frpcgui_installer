@@ -8,4 +8,7 @@
   ### 요구사항
   1. Windows 7 서비스팩 1 이상
   ### Requirements
-  1. Windows 7 Service Pack 1 or later
+  1. Windows 7 Service Pack 1 or later  
+
+  ### Automatic distribution command (Run as administrator)
+  msiexec /i frpcgui_installer.msi DEVICE_NAME="device_name_here" /quiet /norestart
