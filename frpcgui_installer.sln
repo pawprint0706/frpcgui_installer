@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "frpcgui_installer", "frpcgui_installer\frpcgui_installer.wixproj", "{6E6D3711-E806-4790-8886-EF4C27E62668}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReplaceDeviceNameInIni", "ReplaceDeviceNameInIni\ReplaceDeviceNameInIni.csproj", "{7C29D1C8-E066-4BF5-933E-474617517ACB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6E6D3711-E806-4790-8886-EF4C27E62668}.Debug|x86.ActiveCfg = Debug|x86
+		{6E6D3711-E806-4790-8886-EF4C27E62668}.Debug|x86.Build.0 = Debug|x86
+		{6E6D3711-E806-4790-8886-EF4C27E62668}.Release|x86.ActiveCfg = Release|x86
+		{6E6D3711-E806-4790-8886-EF4C27E62668}.Release|x86.Build.0 = Release|x86
+		{7C29D1C8-E066-4BF5-933E-474617517ACB}.Debug|x86.ActiveCfg = Debug|x86
+		{7C29D1C8-E066-4BF5-933E-474617517ACB}.Debug|x86.Build.0 = Debug|x86
+		{7C29D1C8-E066-4BF5-933E-474617517ACB}.Release|x86.ActiveCfg = Release|x86
+		{7C29D1C8-E066-4BF5-933E-474617517ACB}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

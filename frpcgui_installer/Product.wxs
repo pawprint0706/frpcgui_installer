@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="FRP GUI Client" Language="1042" Codepage="949" Version="1.0.0.0" Manufacturer="SUHOIMAGE" UpgradeCode="70C72015-EFDE-46E8-9CC2-B87B2F39A3B0">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Platform="x64" />
+    <Property Id="ARPPRODUCTICON" Value="FRPCIcon" />
+    <Icon Id="FRPCIcon" SourceFile="icon.ico" />
+
+		<MajorUpgrade DowngradeErrorMessage="[ProductName]의 최신 버전이 이미 설치되어 있습니다." />
+		<MediaTemplate EmbedCab="yes" />
+
+		<Feature Id="ProductFeature" Title="FRP GUI Client 설치 마법사" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="CMP_StartupShortcut" />
+      <ComponentRef Id="CMP_StartMenuShortcut" />
+		</Feature>
+
+    <!-- Property 모음 -->
+    <Property Id="DEVICE_NAME" Value="장치이름입력" />
+    <Property Id="TARGETDIR" Value="C:\" />
+    
+    <!-- CustomAction 모음 -->
+    <!-- frpc_template.ini를 참고하여 입력받은 장치이름을 삽입한 frpc.ini 생성 -->
+    <CustomAction Id="SetReplaceIniData" Property="ReplaceDeviceNameInIni" Value="INSTALLFOLDER=[INSTALLFOLDER];DEVICE_NAME=[DEVICE_NAME]" Execute="immediate"/>
+    <CustomAction Id="ReplaceDeviceNameInIni" BinaryKey="ReplaceDevName" DllEntry="ReplaceDeviceNameInIni" Execute="deferred" Return="check" Impersonate="no" />
+
+    <InstallExecuteSequence>
+      <!-- 설치 순서와 조건 -->
+      <!-- 입력받은 장치명을 CustomAction DLL로 넘겨주기 -->
+      <Custom Action="SetReplaceIniData" After="InstallFiles">
+        <![CDATA[NOT Installed]]>
+      </Custom>
+      <Custom Action="ReplaceDeviceNameInIni" After="SetReplaceIniData">
+        <![CDATA[NOT Installed]]>
+      </Custom>
+    </InstallExecuteSequence>
+  </Product>
+
+  <Fragment>
+    <!-- frpc_template.ini를 참고하여 입력받은 장치이름을 삽입한 frpc.ini 생성 -->
+    <Binary Id="ReplaceDevName" SourceFile="$(var.ProjectDir)\ReplaceDeviceNameInIni.CA.dll" />
+  </Fragment>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <!-- C:\FRP GUI Client -->
+      <Directory Id="INSTALLFOLDER" Name="FRP GUI Client" />
+      <!-- 시작 메뉴 폴더: 일반적으로 'Programs' 디렉터리로 매핑 -->
+      <Directory Id="ProgramMenuFolder" Name="Programs">
+        <Directory Id="FRP_GUI_Client_Menu" Name="FRP GUI Client" />
+      </Directory>
+      <!-- 시작 프로그램 폴더: 'Startup' 폴더로 매핑 -->
+      <Directory Id="StartupFolder" Name="Startup" />
+    </Directory>
+	</Fragment>
+
+	<Fragment>
+    <!-- 설치 디렉토리에 복사할 파일들 -->
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="CMP_frpcgui" Guid="D4233A53-AE55-4DB6-B367-38B9B574FAC1" Win64="yes">
+        <File Id="FILE_frpcgui_exe" Source="$(var.ProjectDir)\frpcgui.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="CMP_frpcini" Guid="3AAE0AE8-E704-4032-BACA-0B7210EFEDDA" Win64="yes">
+        <File Id="FILE_frpcini" Source="$(var.ProjectDir)\frpc_template.ini" KeyPath="yes" />
+      </Component>
+      <Component Id="CMP_mfc140u_dll" Guid="D277CA4A-9A00-42B3-B02D-7571D64E0C6F" Win64="yes">
+        <File Id="FILE_mfc140u_dll" Source="$(var.ProjectDir)\mfc140u.dll" KeyPath="yes" />
+      </Component>
+      <Component Id="CMP_msvcp140_dll" Guid="E81DDC26-047C-4367-98BD-A7912D912753" Win64="yes">
+        <File Id="FILE_msvcp140_dll" Source="$(var.ProjectDir)\msvcp140.dll" KeyPath="yes" />
+      </Component>
+      <Component Id="CMP_vcruntime140_dll" Guid="84BB017F-312A-4AA1-8C56-3E0C742C8ACB" Win64="yes">
+        <File Id="FILE_vcruntime140_dll" Source="$(var.ProjectDir)\vcruntime140.dll" KeyPath="yes" />
+      </Component>
+      <Component Id="CMP_vcruntime140_1_dll" Guid="9FA2D1CD-EA49-4A79-97D2-69A6D9D4AB1B" Win64="yes">
+        <File Id="FILE_vcruntime140_1_dll" Source="$(var.ProjectDir)\vcruntime140_1.dll" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+	</Fragment>
+
+  <Fragment>
+    <!-- 시작프로그램에 바로가기 등록 -->
+    <DirectoryRef Id="StartupFolder">
+      <Component Id="CMP_StartupShortcut" Guid="7A526C40-7C87-4E67-926B-3605057A4458" Win64="yes">
+        <Shortcut Id="Shortcut_Startup" Name="FRP GUI Client" Description="시스템 시작 시 FRP GUI Client를 실행합니다." Target="[INSTALLFOLDER]frpcgui.exe" WorkingDirectory="INSTALLFOLDER"/>
+        <RegistryValue Root="HKCU" Key="Software\SUHOIMAGE\FRP" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+    <!-- 시작 메뉴에 바로가기 등록 -->
+    <DirectoryRef Id="FRP_GUI_Client_Menu">
+      <Component Id="CMP_StartMenuShortcut" Guid="FDC84342-4E95-416C-BD95-A687E8B34AB9" Win64="yes">
+        <Shortcut Id="Shortcut_StartMenu" Name="FRP GUI Client" Description="FRP GUI Client 실행" Target="[INSTALLFOLDER]frpcgui.exe" WorkingDirectory="INSTALLFOLDER"/>
+        <RegistryValue Root="HKCU" Key="Software\SUHOIMAGE\FRPMenu" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+        <RemoveFolder Id="Remove_FRP_GUI_Client_Menu" Directory="FRP_GUI_Client_Menu" On="uninstall" />
+        <CreateFolder />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>
